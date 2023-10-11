@@ -2,7 +2,6 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 
 interface Props {
   bucket: s3.IBucket;
@@ -22,19 +21,32 @@ export class Cloudfront extends Construct {
     );
     props.bucket.grantRead(originAccessIdentity);
 
-    const origin = new origins.S3Origin(props.bucket, { originAccessIdentity });
-    const cfDist = new cloudfront.Distribution(this, `${ns}Dist`, {
-      defaultBehavior: {
-        origin,
-        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        compress: false,
-      },
-      defaultRootObject: 'index.html',
-      errorResponses: [
+    const cfDist = new cloudfront.CloudFrontWebDistribution(this, `${ns}Dist`, {
+      originConfigs: [
         {
-          httpStatus: 403,
-          responseHttpStatus: 200,
+          s3OriginSource: {
+            s3BucketSource: props.bucket,
+            originAccessIdentity,
+            originShieldRegion: cdk.Stack.of(this).region,
+          },
+          behaviors: [
+            {
+              isDefaultBehavior: true,
+              minTtl: cdk.Duration.seconds(0),
+              maxTtl: cdk.Duration.seconds(86400),
+              defaultTtl: cdk.Duration.seconds(3600),
+              allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
+              cachedMethods: cloudfront.CloudFrontAllowedCachedMethods.GET_HEAD,
+              viewerProtocolPolicy:
+                cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            },
+          ],
+        },
+      ],
+      errorConfigurations: [
+        {
+          errorCode: 403,
+          responseCode: 200,
           responsePagePath: '/index.html',
         },
       ],
