@@ -124,7 +124,7 @@ export class Pipeline extends Construct {
       artifacts: {
         name: 'nuxt',
         files: ['**/*'],
-        'base-directory': path.resolve(buildPath, 'dist'),
+        'base-directory': path.join(buildPath, 'dist'),
       },
     });
   }
