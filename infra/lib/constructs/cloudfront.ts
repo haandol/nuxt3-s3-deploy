@@ -22,6 +22,7 @@ export class Cloudfront extends Construct {
     props.bucket.grantRead(originAccessIdentity);
 
     const cfDist = new cloudfront.CloudFrontWebDistribution(this, `${ns}Dist`, {
+      comment: ns,
       originConfigs: [
         {
           s3OriginSource: {
