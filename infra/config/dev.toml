@@ -1,0 +1,14 @@
+[app]
+ns="Nuxt3Deploy"
+stage="Dev"
+
+[aws]
+region="ap-northeast-2"
+
+[build]
+path='.'
+
+[repository]
+name="nuxt3-deploy"
+branch="main"
+region="ap-northeast-2"
