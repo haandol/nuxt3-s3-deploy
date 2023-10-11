@@ -112,7 +112,6 @@ export class Pipeline extends Construct {
       `npm i -g yarn`,
       `yarn install`,
       `yarn generate`,
-      `ls -al`,
     ];
 
     return codebuild.BuildSpec.fromObject({
