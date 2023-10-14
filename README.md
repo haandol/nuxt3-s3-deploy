@@ -43,6 +43,14 @@ if you want to use your own repository, edit `repository` variable at [**/infra/
 $ cp config/dev.toml .toml
 ```
 
+```ini
+if you want to use alternative domains with AWS Certificate Manager, add following config to your toml
+
+[domain]
+acmCertArn="CERT_ARN"
+altDomains=["www.ALTDOMAIN.com"]
+```
+
 the repository should be Codecommit git repository
 
 ## Deploy CDK Stacks on AWS
