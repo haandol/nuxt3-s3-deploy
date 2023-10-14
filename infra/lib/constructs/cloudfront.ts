@@ -50,6 +50,11 @@ export class Cloudfront extends Construct {
           responseCode: 200,
           responsePagePath: '/index.html',
         },
+        {
+          errorCode: 404,
+          responseCode: 200,
+          responsePagePath: '/index.html',
+        },
       ],
     });
     this.distributionId = cfDist.distributionId;
