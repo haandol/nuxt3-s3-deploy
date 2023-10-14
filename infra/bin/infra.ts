@@ -15,4 +15,6 @@ new InfraStack(app, `${Config.app.ns}InfraStack`, {
   repositoryName: Config.repository.name,
   repositoryBranch: Config.repository.branch,
   repositoryRegion: Config.repository.region,
+  acmCertArn: Config.domain?.acmCertArn,
+  aliases: Config.domain?.altDomains,
 });

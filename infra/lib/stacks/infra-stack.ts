@@ -10,6 +10,8 @@ interface Props extends cdk.StackProps {
   repositoryRegion: string;
   repositoryBranch: string;
   repositoryName: string;
+  acmCertArn?: string;
+  aliases?: string[];
 }
 
 export class InfraStack extends cdk.Stack {
@@ -28,7 +30,11 @@ export class InfraStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    const cf = new Cloudfront(this, `Cloudfront`, { bucket });
+    const cf = new Cloudfront(this, `Cloudfront`, {
+      bucket,
+      acmCertArn: props.acmCertArn,
+      aliases: props.aliases,
+    });
 
     new Pipeline(this, `Pipeline`, {
       ...props,

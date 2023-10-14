@@ -1,10 +1,13 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as certmanager from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 
 interface Props {
   bucket: s3.IBucket;
+  acmCertArn?: string;
+  aliases?: string[];
 }
 
 export class Cloudfront extends Construct {
@@ -20,6 +23,21 @@ export class Cloudfront extends Construct {
       `${ns}OAI`
     );
     props.bucket.grantRead(originAccessIdentity);
+
+    let viewerCertificate = undefined;
+    if (props.acmCertArn) {
+      const certificate = certmanager.Certificate.fromCertificateArn(
+        this,
+        'Certificate',
+        props.acmCertArn
+      );
+      viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate(
+        certificate,
+        {
+          aliases: props.aliases,
+        }
+      );
+    }
 
     const cfDist = new cloudfront.CloudFrontWebDistribution(this, `${ns}Dist`, {
       comment: ns,
@@ -56,6 +74,7 @@ export class Cloudfront extends Construct {
           responsePagePath: '/index.html',
         },
       ],
+      viewerCertificate,
     });
     this.distributionId = cfDist.distributionId;
 

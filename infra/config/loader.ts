@@ -14,6 +14,10 @@ interface IConfig {
   build: {
     path: string;
   };
+  domain?: {
+    acmCertArn?: string;
+    altDomains?: string[];
+  };
   repository: {
     name: string;
     branch: string;
@@ -35,6 +39,12 @@ const schema = joi
     aws: joi.object({
       region: joi.string().required(),
     }),
+    domain: joi
+      .object({
+        acmCertArn: joi.string().optional(),
+        altDomains: joi.array().items(joi.string()).optional(),
+      })
+      .optional(),
     build: joi.object({
       path: joi.string(),
     }),
