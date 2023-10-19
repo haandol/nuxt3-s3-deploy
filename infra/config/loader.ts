@@ -23,6 +23,9 @@ interface IConfig {
     branch: string;
     region: string;
   };
+  notification?: {
+    hookUrl: string;
+  };
 }
 
 const cfg = toml.parse(
@@ -53,6 +56,11 @@ const schema = joi
       branch: joi.string(),
       region: joi.string(),
     }),
+    notification: joi
+      .object({
+        hookUrl: joi.string(),
+      })
+      .optional(),
   })
   .unknown();
 

@@ -8,7 +8,14 @@ region="ap-northeast-2"
 [build]
 path='.'
 
+#[domain]
+# acmCertArn=""
+# altDomains=[""]
+
 [repository]
 name="nuxt3-deploy"
 branch="main"
 region="ap-northeast-2"
+
+#[notification]
+#hookUrl=""

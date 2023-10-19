@@ -17,6 +17,8 @@ interface Props {
 }
 
 export class Pipeline extends Construct {
+  readonly pipeline: codepipeline.IPipeline;
+
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
 
@@ -104,6 +106,8 @@ export class Pipeline extends Construct {
         project: cfProject,
       })
     );
+
+    this.pipeline = pipeline;
   }
 
   createNuxtBuildspec(buildPath: string): codebuild.BuildSpec {

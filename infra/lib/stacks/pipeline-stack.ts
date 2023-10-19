@@ -4,6 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { Cloudfront } from '../constructs/cloudfront';
 import { Pipeline } from '../constructs/pipeline';
+import { Notification } from '../constructs/notification';
 
 interface Props extends cdk.StackProps {
   buildPath: string;
@@ -12,9 +13,10 @@ interface Props extends cdk.StackProps {
   repositoryName: string;
   acmCertArn?: string;
   aliases?: string[];
+  notificationHookUrl?: string;
 }
 
-export class InfraStack extends cdk.Stack {
+export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
@@ -36,10 +38,18 @@ export class InfraStack extends cdk.Stack {
       aliases: props.aliases,
     });
 
-    new Pipeline(this, `Pipeline`, {
+    const pipeline = new Pipeline(this, `Pipeline`, {
       ...props,
       bucket,
       distributionId: cf.distributionId,
     });
+
+    if (props.notificationHookUrl) {
+      new Notification(this, `Notification`, {
+        ...props,
+        pipeline: pipeline.pipeline,
+        notificationHookUrl: props.notificationHookUrl,
+      });
+    }
   }
 }
